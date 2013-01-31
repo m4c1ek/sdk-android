@@ -145,7 +145,7 @@ public class SPiDAuthorizationRequest {
         request.addBodyParameter("client_id", config.getClientID());
         request.addBodyParameter("client_secret", config.getClientSecret());
         request.addBodyParameter("code", code);
-        request.addBodyParameter("redirect_uri", config.getRedirectURL() + "spid/login");
+        request.addBodyParameter("redirect_uri", config.getRedirectURL() + "login");
         request.execute();
     }
 
@@ -161,7 +161,7 @@ public class SPiDAuthorizationRequest {
         request.addBodyParameter("client_id", config.getClientID());
         request.addBodyParameter("client_secret", config.getClientSecret());
         request.addBodyParameter("refresh_token", refreshToken);
-        request.addBodyParameter("redirect_uri", config.getRedirectURL() + "spid/login");
+        request.addBodyParameter("redirect_uri", config.getRedirectURL() + "login");
         request.execute();
     }
 
@@ -183,7 +183,7 @@ public class SPiDAuthorizationRequest {
      */
     public boolean handleIntent(Uri data) {
         if (shouldHandleIntent(data)) {
-            if (data.getPath().endsWith("login")) {
+            if (data.getHost().endsWith("login") || data.getPath().endsWith("login")) {
                 String code = data.getQueryParameter("code");
                 if (code == null) {
                     if (listener != null) {
@@ -216,7 +216,7 @@ public class SPiDAuthorizationRequest {
     public void apiLogout(SPiDAccessToken token) {
         String requestURL = SPiDClient.getInstance().getConfig().getServerURL() + "/logout";
         SPiDRequest request = new SPiDRequest(requestURL, new LogoutListener(listener));
-        request.addQueryParameter("redirect_uri", SPiDClient.getInstance().getConfig().getRedirectURL() + "spid/logout");
+        request.addQueryParameter("redirect_uri", SPiDClient.getInstance().getConfig().getRedirectURL() + "logout");
         request.addQueryParameter("oauth_token", token.getAccessToken());
         request.setMaxRetryCount(-1);
         request.execute();
@@ -230,7 +230,7 @@ public class SPiDAuthorizationRequest {
      */
     protected static String getAuthorizationURL() throws UnsupportedEncodingException {
         SPiDConfiguration config = SPiDClient.getInstance().getConfig();
-        String encodedRedirectURL = URLEncoder.encode(config.getRedirectURL() + "spid/login", "UTF-8");
+        String encodedRedirectURL = URLEncoder.encode(config.getRedirectURL() + "login", "UTF-8");
         return String.format(AUTHORIZE_URL, config.getAuthorizationURL(), config.getClientID(), encodedRedirectURL, "authorization_code", "code", "mobile", "1");
     }
 
@@ -242,7 +242,7 @@ public class SPiDAuthorizationRequest {
      */
     protected static String getRegistrationURL() throws UnsupportedEncodingException {
         SPiDConfiguration config = SPiDClient.getInstance().getConfig();
-        String encodedRedirectURL = URLEncoder.encode(config.getRedirectURL() + "spid/login", "UTF-8");
+        String encodedRedirectURL = URLEncoder.encode(config.getRedirectURL() + "login", "UTF-8");
         return String.format(AUTHORIZE_URL, config.getRegistrationURL(), config.getClientID(), encodedRedirectURL, "authorization_code", "code", "mobile", "1");
     }
 
@@ -254,7 +254,7 @@ public class SPiDAuthorizationRequest {
      */
     protected static String getLostPasswordURL() throws UnsupportedEncodingException {
         SPiDConfiguration config = SPiDClient.getInstance().getConfig();
-        String encodedRedirectURL = URLEncoder.encode(config.getRedirectURL() + "spid/login", "UTF-8");
+        String encodedRedirectURL = URLEncoder.encode(config.getRedirectURL() + "login", "UTF-8");
         return String.format(AUTHORIZE_URL, config.getLostPasswordURL(), config.getClientID(), encodedRedirectURL, "authorization_code", "code", "mobile", "1");
     }
 
@@ -269,7 +269,7 @@ public class SPiDAuthorizationRequest {
     protected static String getLogoutURL(SPiDAccessToken accessToken) throws UnsupportedEncodingException {
         SPiDConfiguration config = SPiDClient.getInstance().getConfig();
         String requestURL = SPiDClient.getInstance().getConfig().getServerURL() + "/logout";
-        String encodedRedirectURL = URLEncoder.encode(config.getRedirectURL() + "spid/login", "UTF-8");
+        String encodedRedirectURL = URLEncoder.encode(config.getRedirectURL() + "login", "UTF-8");
         return requestURL + "?redirect_uri=" + encodedRedirectURL + "&oauth_token=" + accessToken.getAccessToken();
     }
 

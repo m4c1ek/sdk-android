@@ -311,7 +311,7 @@ public class SPiDClient {
     /**
      * @return Access token
      */
-    protected SPiDAccessToken getAccessToken() {
+    public SPiDAccessToken getAccessToken() {
         return token;
     }
 
